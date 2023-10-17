@@ -2,6 +2,8 @@ package com.example.annotation.config;
 
 import com.example.annotation.annotation.SagRequestParam;
 import org.springframework.core.MethodParameter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -24,6 +26,8 @@ public class ModifiedSagCodeResolver implements HandlerMethodArgumentResolver {
         SagRequestParam annotation = parameter.getParameterAnnotation(SagRequestParam.class);
         String name = (annotation != null && StringUtils.hasLength(annotation.name())) ? annotation.name() : parameter.getParameterName();
         String sagCode = webRequest.getParameter(name);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object i = authentication.getPrincipal();
 
         return (StringUtils.hasLength(sagCode) && "AWS_AL".equals("AWS_AL")) ? SagModifierUtil.getUpdatedSubjectCode(sagCode) : sagCode;
     }
